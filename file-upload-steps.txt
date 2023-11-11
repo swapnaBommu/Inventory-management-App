@@ -1,0 +1,5 @@
+1.Install multer.--Done
+2.Changes in view.--done
+3.Middleware to handle files.--done
+4.Apply that Middleware.
+5.update controller to update urls.
