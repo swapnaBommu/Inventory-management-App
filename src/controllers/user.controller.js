@@ -22,7 +22,18 @@ export default class UserController {
         errorMessage:"Invalid credentials"
       });
     }
+    req.session.userEmail = email;
     var products = ProductModel.getAll();
     return res.render('index', { products });
+  }
+  logout(req, res) {
+    // on logout, destroy the session
+    req.session.destroy((err) => {
+    if (err) {
+    console.log(err);
+    } else {
+    res.redirect('/login');
+    }
+    });
   }
 }
