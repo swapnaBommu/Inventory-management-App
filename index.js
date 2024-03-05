@@ -4,6 +4,7 @@ import ProductController from './src/controllers/product.controller.js';
 import ejsLayouts from 'express-ejs-layouts';
 import validateRequest from './src/middlewares/addProductMiddleware.js';
 import { uploadFile } from './src/middlewares/file-upload.middleware.js';
+import UserController from './src/controllers/user.controller.js';
 
 const server = express();
 
@@ -12,6 +13,7 @@ server.use(express.static("public"));
 
 //create an instance of product controller
 const productController = new ProductController();
+const usersController = new UserController();
 
 //setup ejs layouts
 server.use(ejsLayouts);
@@ -26,7 +28,10 @@ server.set("views",path.join(path.resolve(),"src","views"));
 
 
 
-
+server.get('/register', usersController.getRegister);
+server.post('/register', usersController.postRegister);
+server.get('/login', usersController.getLogin);
+server.post('/login', usersController.postLogin);
 server.get("/",productController.getProducts);
 server.get("/add-product",productController.getAddProduct);
 server.post(
@@ -36,7 +41,7 @@ server.post(
     productController.postAddProduct
 );
 server.get("/update-product/:id",productController.getUpdateProductView);
-server.post("/update-product",productController.postUpdateProduct);
+server.post("/update-product",uploadFile.single('imageUrl'),productController.postUpdateProduct);
 server.post("/delete-product/:id",productController.deleteProduct);
 
 server.use(express.static('src/views'));
