@@ -7,6 +7,8 @@ import { uploadFile } from './src/middlewares/file-upload.middleware.js';
 import { auth } from './src/middlewares/auth.middleware.js';
 import UserController from './src/controllers/user.controller.js';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import { setLastVisit } from './src/middlewares/lastvisit.middleware.js';
 
 const server = express();
 
@@ -28,6 +30,9 @@ server.use(session({
     saveUninitialized:true,
     cookie:{secure: false}
 }))
+server.use(cookieParser());
+server.use(setLastVisit);
+
 //setup view engine settings
 server.set("view engine","ejs");
 server.set("views",path.join(path.resolve(),"src","views"));
@@ -39,7 +44,10 @@ server.get('/register', usersController.getRegister);
 server.post('/register', usersController.postRegister);
 server.get('/login', usersController.getLogin);
 server.post('/login', usersController.postLogin);
-server.get("/", auth, productController.getProducts);
+server.get("/",
+        setLastVisit,
+        auth, 
+        productController.getProducts);
 server.get("/add-product", auth,productController.getAddProduct);
 server.post(
     "/",
